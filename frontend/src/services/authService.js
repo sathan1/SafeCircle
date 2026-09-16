@@ -1,4 +1,5 @@
-const API_URL = 'http://localhost:5000/api/auth';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+const API_URL = `${API_BASE_URL}/api/auth`;
 
 const authService = {
   async register(name, email, password) {
