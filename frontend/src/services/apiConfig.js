@@ -15,7 +15,13 @@ const DEFAULT_LOCAL_URL = 'http://localhost:5000';
 export function getApiBaseUrl() {
   const custom = localStorage.getItem('safecircle_api_url');
   if (custom && custom.trim()) {
-    return custom.trim().replace(/\/+$/, '');
+    const trimmed = custom.trim().replace(/\/+$/, '');
+    // Auto-clean dead Render or stale IPs
+    if (trimmed.includes('onrender.com') || trimmed.includes('192.168.31.181') || trimmed.includes('10.85.25.60')) {
+      localStorage.removeItem('safecircle_api_url');
+    } else {
+      return trimmed;
+    }
   }
 
   const envUrl = import.meta.env.VITE_API_URL;
@@ -23,11 +29,14 @@ export function getApiBaseUrl() {
     return envUrl.trim().replace(/\/+$/, '');
   }
 
-  // If running in browser and accessed via LAN IP (e.g. http://192.168.x.x:5173),
-  // automatically point API requests to the same host on port 5000
+  // If accessed in browser on localhost, always talk directly to local backend port 5000
   if (typeof window !== 'undefined' && window.location && window.location.hostname) {
     const host = window.location.hostname;
-    if (host !== 'localhost' && host !== '127.0.0.1' && !host.startsWith('10.0.2.')) {
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return DEFAULT_LOCAL_URL;
+    }
+    // Accessed via LAN IP in browser (e.g. http://172.168.67.254:5173)
+    if (!host.startsWith('10.0.2.')) {
       return `http://${host}:5000`;
     }
   }

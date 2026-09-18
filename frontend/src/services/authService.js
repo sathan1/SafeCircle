@@ -90,19 +90,28 @@ const authService = {
   },
 
   async getMe(token) {
-    const response = await fetch(`${getAuthUrl()}/me`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    try {
+      const response = await fetch(`${getAuthUrl()}/me`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      const data = await response.json();
+      if (!response.ok) {
+        const err = new Error(data.message || 'Failed to fetch user');
+        err.status = response.status;
+        throw err;
       }
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      const err = new Error(data.message || 'Failed to fetch user');
-      err.status = response.status;
+      return data;
+    } catch (err) {
+      clearTimeout(timeoutId);
       throw err;
     }
-    return data;
   }
 };
 

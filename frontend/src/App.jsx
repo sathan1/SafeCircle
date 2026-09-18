@@ -91,6 +91,11 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
             </Route>
 
+            {/* Direct Hackathon Simulation Route (Immediate Access for Evaluators) */}
+            <Route element={<AppLayout />}>
+              <Route path="/demo" element={<Demo />} />
+            </Route>
+
             {/* Authenticated Application Shell */}
             <Route element={<ProtectedRoute />}>
               <Route element={<AppLayout />}>
@@ -102,7 +107,6 @@ function App() {
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/contact-dashboard" element={<ContactDashboard />} />
                 <Route path="/alerts" element={<Alerts />} />
-                <Route path="/demo" element={<Demo />} />
                 <Route path="/settings" element={<Settings />} />
               </Route>
             </Route>
