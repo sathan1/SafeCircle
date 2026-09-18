@@ -4,7 +4,7 @@ const journeyService = require('../services/journeyService');
 // @route   GET /api/journeys
 const getJourneys = async (req, res) => {
   try {
-    const journeys = await journeyService.getJourneys();
+    const journeys = await journeyService.getJourneys(req.userId);
     res.status(200).json({
       success: true,
       data: journeys,
@@ -22,7 +22,7 @@ const getJourneys = async (req, res) => {
 // @route   GET /api/journeys/:id
 const getJourneyById = async (req, res) => {
   try {
-    const journey = await journeyService.getJourneyById(req.params.id);
+    const journey = await journeyService.getJourneyById(req.params.id, req.userId);
     if (!journey) {
       return res.status(404).json({
         success: false,
@@ -45,7 +45,7 @@ const getJourneyById = async (req, res) => {
 // @route   POST /api/journeys
 const createJourney = async (req, res) => {
   try {
-    const newJourney = await journeyService.createJourney(req.body);
+    const newJourney = await journeyService.createJourney(req.body, req.userId);
     res.status(201).json({
       success: true,
       data: newJourney,
@@ -84,7 +84,7 @@ const updateJourneyStatus = async (req, res) => {
   }
 };
 
-// @desc    Update journey safety state (demo / dev support)
+// @desc    Update journey safety state
 // @route   PATCH /api/journeys/:id/state
 const updateJourneyState = async (req, res) => {
   try {
@@ -105,6 +105,35 @@ const updateJourneyState = async (req, res) => {
     res.status(err.statusCode || 400).json({
       success: false,
       message: err.message || 'Failed to update safety state'
+    });
+  }
+};
+
+// @desc    Update journey live GPS location
+// @route   POST /api/journeys/:id/location
+const updateJourneyLocation = async (req, res) => {
+  try {
+    const coords = req.body;
+    if (!coords || (coords.latitude === undefined && coords.lat === undefined)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Coordinates (latitude, longitude) are required'
+      });
+    }
+    const updated = await journeyService.updateJourneyLocation(req.params.id, coords);
+    res.status(200).json({
+      success: true,
+      data: {
+        journeyId: updated.id,
+        currentCoordinates: updated.currentCoordinates,
+        lastCoordinatesUpdate: updated.lastCoordinatesUpdate
+      },
+      message: 'Location telemetry updated'
+    });
+  } catch (err) {
+    res.status(err.statusCode || 400).json({
+      success: false,
+      message: err.message || 'Failed to update location'
     });
   }
 };
@@ -150,6 +179,7 @@ module.exports = {
   createJourney,
   updateJourneyStatus,
   updateJourneyState,
+  updateJourneyLocation,
   updateJourneyRoute,
   deleteJourney
 };

@@ -1,9 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 const request = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${getApiBaseUrl()}${endpoint}`;
+  const token = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
     ...(options.headers || {})
   };
 
@@ -44,6 +46,15 @@ export const journeyService = {
     return res.data;
   },
 
+  // Update journey live location
+  updateLocation: async (id, coords) => {
+    const res = await request(`/api/journeys/${id}/location`, {
+      method: 'POST',
+      body: JSON.stringify(coords)
+    });
+    return res.data;
+  },
+
   // Update journey status (COMPLETED, CANCELLED)
   updateJourneyStatus: async (id, status) => {
     const res = await request(`/api/journeys/${id}/status`, {
@@ -53,7 +64,7 @@ export const journeyService = {
     return res.data;
   },
 
-  // Update journey safety state (demo/dev support)
+  // Update journey safety state
   updateJourneyState: async (id, state) => {
     const res = await request(`/api/journeys/${id}/state`, {
       method: 'PATCH',

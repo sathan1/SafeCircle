@@ -76,9 +76,16 @@ const SafetyCircle = () => {
         setContacts(prev => prev.map(c => c.id === updated.id ? updated : c));
         showToast('Contact updated');
       } else {
-        const created = await contactService.createContact(contactData);
+        let created;
+        if (contactData.email && contactData.email.includes('@')) {
+          const res = await contactService.inviteContact(contactData);
+          created = res.contact;
+          showToast(`Invitation sent to ${contactData.email}`);
+        } else {
+          created = await contactService.createContact(contactData);
+          showToast('Contact added');
+        }
         setContacts(prev => [...prev, created].sort((a, b) => a.priority - b.priority));
-        showToast('Contact added');
       }
       setIsModalOpen(false);
       setContactToEdit(null);

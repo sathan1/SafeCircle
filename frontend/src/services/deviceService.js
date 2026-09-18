@@ -1,14 +1,14 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 /**
- * Service to interact with Phase 11 Device Fallback & Connectivity endpoints
+ * Service to interact with Device Fallback & Connectivity endpoints
  */
 export const deviceService = {
   /**
    * Fetches current phone and wearable status for a journey
    */
   async getDeviceStatus(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/device-status`);
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/device-status`);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || 'Failed to fetch device status');
@@ -20,7 +20,7 @@ export const deviceService = {
    * Simulates phone becoming unavailable (triggers wearable fallback)
    */
   async simulatePhoneUnavailable(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/device-fallback/phone-unavailable`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/device-fallback/phone-unavailable`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -35,7 +35,7 @@ export const deviceService = {
    * Simulates phone reconnecting
    */
   async simulatePhoneConnected(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/device-fallback/phone-connected`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/device-fallback/phone-connected`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -50,7 +50,7 @@ export const deviceService = {
    * Updates wearable status (CONNECTED or DISCONNECTED)
    */
   async simulateWearableStatus(journeyId, status) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/device-fallback/wearable-status`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/device-fallback/wearable-status`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
@@ -66,7 +66,7 @@ export const deviceService = {
    * Resets device states to standard baseline
    */
   async resetDeviceState(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/device-fallback/reset`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/device-fallback/reset`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
@@ -77,3 +77,5 @@ export const deviceService = {
     return data.data;
   }
 };
+
+export default deviceService;

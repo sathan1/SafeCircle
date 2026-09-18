@@ -5,8 +5,11 @@ const checkInController = require('../controllers/checkInController');
 const contactViewController = require('../controllers/contactViewController');
 const anomalyController = require('../controllers/anomalyController');
 const deviceController = require('../controllers/deviceController');
+const optionalAuth = require('../middleware/optionalAuth');
 
 const router = express.Router();
+
+router.use(optionalAuth);
 
 router.route('/')
   .get(journeyController.getJourneys)
@@ -17,6 +20,9 @@ router.route('/:id/status')
 
 router.route('/:id/state')
   .patch(journeyController.updateJourneyState);
+
+router.route('/:id/location')
+  .post(journeyController.updateJourneyLocation);
 
 router.route('/:id/route')
   .patch(journeyController.updateJourneyRoute);

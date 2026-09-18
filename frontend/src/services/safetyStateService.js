@@ -1,7 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 const request = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${getApiBaseUrl()}${endpoint}`;
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {})

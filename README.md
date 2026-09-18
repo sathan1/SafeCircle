@@ -179,21 +179,32 @@ SafeCircle is an advanced academic prototype for personal privacy and safety sys
 
 ---
 
-## 8. How to Run the Project
+## 8. How to Run the Project & Multi-Device Setup
 
 ### Prerequisites
-- Node.js (v18+ recommended, v26 tested)
+- Node.js (v18+ recommended, v24/v26 tested)
 - npm
 
-### 1. Start the Backend Server
+### 1. Configure Backend Environment
+Copy the configuration template:
+```bash
+cd backend
+cp .env.example .env
+```
+Inside `.env`:
+- `PORT=5000`
+- `EMAIL_PROVIDER=console`: Set to `console` for local hackathon testing (OTPs print directly to terminal without needing an API key). For production, set to `resend` or `sendgrid` and provide `EMAIL_PROVIDER_API_KEY`.
+- No MongoDB is required! SafeCircle includes an atomic, zero-dependency persistent JSON store (`backend/data/safecircle_db.json`) that works immediately on any laptop.
+
+### 2. Start the Backend Server
 ```bash
 cd backend
 npm install
 node src/server.js
 ```
-*Backend runs on `http://localhost:5000`.*
+*Backend runs on `http://localhost:5000` with WebSocket gateway at `ws://localhost:5000/ws`.*
 
-### 2. Start the Frontend Application
+### 3. Start the Frontend Web Application
 ```bash
 cd frontend
 npm install
@@ -203,21 +214,41 @@ npm run dev
 
 ---
 
-## 9. How to Test
+## 9. Physical Android Phone & Local Wi-Fi Setup
 
-### Run All Backend Automated Suites
+You can run SafeCircle on physical Android phones connected to your laptop's backend over local Wi-Fi:
+
+1. **Ensure Same Network**: Connect your laptop and Android phones to the same Wi-Fi network (or turn on your laptop's mobile hotspot and connect phones to it).
+2. **Find Your Laptop's IP Address**:
+   - In Windows PowerShell, run `ipconfig`.
+   - Look for `IPv4 Address` under your active Wi-Fi adapter (e.g. `192.168.1.50`).
+3. **Install the APK on Phones**:
+   - Install `build-output/SafeCircle-debug.apk` on Phone 1 (Person), Phone 2 (Mom), and Phone 3 (Dad).
+4. **Point Phones to Laptop Backend**:
+   - Open SafeCircle on each phone.
+   - Tap **Settings** → **Server & Network**.
+   - Enter `http://<your-laptop-ip>:5000` (e.g. `http://192.168.1.50:5000`) and tap **Apply URL**.
+   - Tap **Test Connection**. A green check confirms real-time communication.
+
+---
+
+## 10. Automated Testing Suites
+
+Run all automated verification test suites:
 ```bash
 cd backend
-node test_e2e_flow.js   # Complete 17-step end-to-end integration flow
-node test_phase7.js      # Safety State Engine & scoring tests (32 assertions)
-node test_phase8.js      # Check-In & Escalation tests (40 assertions)
-node test_phase9.js      # Contact Dashboard & Privacy tests (23 assertions)
-node test_phase10.js     # Anomaly Intelligence tests (13 assertions)
-node test_phase11.js     # Wearable Fallback tests (13 assertions)
-node test_phase12.js     # Discreet Mode & Advanced Safety tests (8 assertions)
+node test_multidevice_sync.js # 30/30 checks passed: 3 accounts, invitations, differential disclosures
+node test_e2e_flow.js         # 13/13 checks passed: complete 17-step end-to-end integration flow
+node test_auth_otp.js         # Real email OTP registration and login flow
+node test_phase7.js           # Safety State Engine & scoring tests (32 assertions)
+node test_phase8.js           # Check-In & Escalation tests (40 assertions)
+node test_phase9.js           # Contact Dashboard & Privacy tests (23 assertions)
+node test_phase10.js          # Anomaly Intelligence tests (13 assertions)
+node test_phase11.js          # Wearable Fallback tests (13 assertions)
+node test_phase12.js          # Discreet Mode & Native Launcher tests (8 assertions)
 ```
 
-### Build Frontend for Production
+Build the frontend web assets:
 ```bash
 cd frontend
 npm run build
@@ -225,30 +256,111 @@ npm run build
 
 ---
 
-## 10. Recommended Demo Flow
+## 11. 3-Account Hackathon Demo Walkthrough (7 Scenarios)
 
-For presentations and grading evaluations, execute the following walkthrough:
+For live hackathon evaluations across 3 devices (Person, Mom, Dad):
 
-1. **Dashboard Overview (`/`)**:
-   - Inspect the summary cards showing current safety state, active journey, selected SafePath, check-in status, and trusted circle count.
-2. **Safety Circle & Privacy Policy (`/safety-circle`, `/privacy`)**:
-   - Review registered contacts (Mom, Priya, Ananya) and examine how each contact has customized permissions across `NORMAL`, `CAUTION`, `ELEVATED`, and `CRISIS`.
-3. **Contact Dashboard (`/contact-dashboard`)**:
-   - Switch between contacts (e.g. Mom vs. Ananya) in `NORMAL` state. Observe that Mom has status access while precise coordinates are strictly restricted.
-4. **Interactive Simulator (`/demo`)**:
-   - Trigger a **Route Deviation** (+25 pts). Watch the state transition to `CAUTION`.
-   - Revisit the Contact Dashboard: see emergency status reveal while live GPS remains withheld.
-   - Trigger a **Missed Check-In** (+25 pts). Watch state escalate to `ELEVATED`. Notice approximate location unlock for primary contacts.
-   - Trigger **Emergency Activated** (Straight to `CRISIS`). Observe full live coordinates unlock per policy.
-   - Click **Mark as Safe**. Watch the score reset to 0, state return to `NORMAL`, and all sensitive disclosures immediately revoke.
-5. **Device Fallback Simulator (`/demo`)**:
-   - Click **[Phone Unavailable]**. Observe the primary phone transition to `UNAVAILABLE`, companion wearable assume fallback duty, and `DEVICE_OFFLINE` signal (+10 pts) emitted without causing a false crisis.
-   - Click **[Phone Connected]** to restore primary connectivity.
-6. **Discreet Mode (`/`)**:
-   - Click **Discreet Mode** in the top navigation bar. Demonstrate the working calculator utility interface.
-   - Type `911=` to simulate a discreet emergency trigger.
-   - Click **Return to SafeCircle (Standard Mode)** to return with journey data intact.
-7. **Advanced Device Safety Concepts (`/settings` → Advanced Safety Concepts)**:
-   - Review documented OS-level platform boundaries, the 5x power-button trigger simulation, and user-controlled privacy principles.
-8. **Reset Demo (`/demo`)**:
-   - Click **Reset Demo** to safely clear all simulation signals and restore the system to a clean baseline.
+### Step 1: Log In All Three Accounts
+- **Device 1 (Person)**: Log in as `user@safecircle.app` (Password: `SafeUser123!`).
+- **Device 2 (Mom)**: Log in as `mom@safecircle.app` (Password: `MomSecure123!`).
+- **Device 3 (Dad)**: Log in as `dad@safecircle.app` (Password: `DadSecure123!`).
+
+### Step 2: Establish Circle Guardian Relationship
+- On Person's phone, tap **Safety Circle** → **Add Contact**. Enter Mom's email (`mom@safecircle.app`).
+- On Mom's phone, the **Wards Under Escort** card instantly shows the invitation via WebSocket push. Tap **Accept Protection Request**.
+- Repeat for Dad (`dad@safecircle.app`).
+
+### Step 3: Run the 7 One-Click Scenarios from Demo Mode (`/demo`)
+Open **Demo** (`/demo`) on Person's phone and step through the 7 scenarios:
+
+1. **Scenario 1 (Normal Commute)**:
+   - State: `NORMAL` (Score 0). Person has green shield.
+   - Mom & Dad see "In Transit (Safe)", ETA. **Live GPS coordinates are strictly hidden** by backend differential privacy.
+2. **Scenario 2 (Route Deviation / Caution)**:
+   - State: `CAUTION` (Score 25). Person gets prompt: "Are you on track?".
+   - Mom & Dad see amber alert: "Caution: Route variation". Transit sector revealed; live GPS remains protected.
+3. **Scenario 3 (Missed Check-In / Elevated)**:
+   - State: `ELEVATED` (Score 50). Person gets vibrating 60s prompt.
+   - **Differential Privacy in Action**: Mom (Priority 1) receives SMS & Push with approximate location and battery (84%). Dad (Priority 2) remains in standby to prevent unnecessary panic.
+4. **Scenario 4 (Panic Button / Crisis)**:
+   - State: `CRISIS` (Score 100). Red flashing crisis screen, emergency audio beacon.
+   - Mom and Dad both receive urgent distress sirens, precise real-time GPS coordinates, nearest street address, and emergency medical notes (Blood O+, Asthma Inhaler).
+5. **Scenario 5 (Fallback: GPS Lost)**:
+   - Satellite fix lost in tunnel. Dead reckoning engages, pins last verified coordinate with 140m accuracy radius.
+6. **Scenario 6 (Fallback: Internet Disconnected)**:
+   - Cellular data dropped. Offline banner appears, local safety beacon caches telemetry, native SMS escalation queued.
+7. **Scenario 7 (Fallback: Phone Powered Off)**:
+   - Battery dead or device shut down. Companion wearable elevates to active fallback; server inactivity watchdog arms.
+   - Honest disclosure: No app can track after shutdown; SafeCircle relies on wearable companion handoff and server watchdog.
+
+---
+
+## 11. SafeCircle Android Application
+
+SafeCircle is packaged as a production-grade native Android application (`com.safecircle.app`) engineered with Capacitor, Gradle, and modern Android APIs.
+
+### Mobile-Native Architecture
+- **Native Bottom Navigation**: 5-tab quick-access bar (`Home`, `Journeys`, `Circle`, `Privacy`, `Alerts`) with high-contrast active states and emergency indicators.
+- **Hardware Back Button Handling**: Managed via `@capacitor/app`. Intelligently dismisses open modals, exits Discreet Mode, or steps back through navigation history.
+- **FusedLocationProvider GPS**: Integrated via `@capacitor/geolocation`. Provides real accuracy in meters, detects weak/stale signals, and refuses to falsely report stale data as live.
+- **Offline & Connectivity Awareness**: Monitored via `@capacitor/network`. Unobtrusive banner alerts the user when cellular/Wi-Fi is lost, preserving local privacy enforcement.
+- **Device & Battery Telemetry**: Monitored via `@capacitor/device`. Warns user when battery drops below 15% and incorporates battery status into the Safety State Engine.
+- **Emergency Evidence Mode**: Integrated via `@capacitor/camera`. Provides transparent, user-authorized photo capture of situational evidence without secret background recording.
+- **Local Notifications**: Scheduled via `@capacitor/local-notifications` with a dedicated Android Notification Channel (`SafeCircle Emergency Alerts`).
+
+### Android Directory Structure
+```
+frontend/
+├── android/
+│   ├── app/
+│   │   ├── build.gradle                   # Target SDK 36, Min SDK 24, ProGuard rules
+│   │   └── src/main/
+│   │       ├── AndroidManifest.xml        # Location, Camera, Notification, Network permissions
+│   │       ├── java/com/safecircle/app/   # Native MainActivity entrypoint
+│   │       └── res/                       # SafeCircle Rose Shield icons & Splash drawable
+│   ├── build.gradle                       # Android Gradle Plugin 8.13.0
+│   └── gradlew.bat                        # Gradle Wrapper 8.14.3
+└── src/services/native/                   # Mobile hardware service adapters
+```
+
+### Pre-Built Debug APK
+A verified, ready-to-install debug build is compiled and available at:
+```
+build-output/SafeCircle-debug.apk
+```
+Transfer this file to any Android phone (Android 7.0+ / API 24+) to install and test directly.
+
+### Building the Android APK from Source
+
+#### Prerequisites
+- **JDK**: OpenJDK 21 (or OpenJDK 17+)
+- **Android SDK**: Platform 36 (Android 15) or Platform 34 (Android 14) + Build Tools 34.0.0+
+
+#### Build Commands
+```powershell
+# 1. Build optimized web assets
+cd frontend
+npm run build
+
+# 2. Sync web bundle to Android native assets
+npx cap sync android
+
+# 3. Compile native Debug APK with Gradle Wrapper
+cd android
+$env:JAVA_HOME = "D:\Android\jdk-21"       # Path to your JDK 21
+$env:ANDROID_HOME = "D:\Android\Sdk"      # Path to your Android SDK
+.\gradlew.bat assembleDebug
+```
+The output APK is generated at:
+`frontend/android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Release Build Configuration
+To build a signed release APK / Android App Bundle (AAB) for Google Play:
+```powershell
+# Generate signing keystore
+keytool -genkey -v -keystore safecircle.keystore -alias safecircle -keyalg RSA -keysize 2048 -validity 10000
+
+# Compile release APK
+.\gradlew.bat assembleRelease
+```
+Configure `signingConfigs` in `frontend/android/app/build.gradle` referencing your keystore and credentials.

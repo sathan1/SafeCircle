@@ -1,95 +1,98 @@
 import React from 'react';
-import { Shield, AlertTriangle, Activity, AlertCircle, Sparkles, ArrowRight } from 'lucide-react';
+import { Shield, AlertTriangle, Activity, AlertCircle, ArrowRight, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSafetyState } from '../../contexts/SafetyStateContext';
 import Card from '../common/Card';
 import StatusBadge from '../common/StatusBadge';
+import EmergencyHoldButton from '../common/EmergencyHoldButton';
 
 const STATE_DETAILS = {
   NORMAL: {
-    bannerTitle: 'SAFE JOURNEY',
-    headline: 'Routine Journey Protection',
-    description: 'Your current journey is progressing normally. Telemetry is within expected bounds and no unprompted alerts have been dispatched.',
+    badgeState: 'NORMAL',
+    headline: "You're Safe",
+    description: "No information is being shared beyond your normal privacy settings. Your circle sees only basic status.",
     icon: Shield,
     accentBorder: 'border-l-emerald-500',
-    badgeState: 'NORMAL',
-    bgTint: 'bg-emerald-50/40',
-    indicatorColor: 'bg-emerald-500',
+    bgTint: 'bg-emerald-50/50',
     textColor: 'text-emerald-800'
   },
   CAUTION: {
-    bannerTitle: 'CAUTION CHECK-IN',
-    headline: 'Minor Delay or Route Variance',
-    description: 'A brief route anomaly or stationary delay was detected. SafeCircle has scheduled a prompt check-in. Trusted contacts see general journey progress.',
+    badgeState: 'CAUTION',
+    headline: 'Unusual Condition Detected',
+    description: "Something unusual was detected (e.g., unexpected delay or deviation). Please check in so we know you're okay.",
     icon: AlertTriangle,
     accentBorder: 'border-l-amber-500',
-    badgeState: 'CAUTION',
-    bgTint: 'bg-amber-50/50',
-    indicatorColor: 'bg-amber-500',
+    bgTint: 'bg-amber-50/60',
     textColor: 'text-amber-800'
   },
   ELEVATED: {
-    bannerTitle: 'ELEVATED MONITORING',
-    headline: 'Unresolved Check-In Prompt',
-    description: 'Two safety prompts elapsed without response. Authorized contacts have been notified with coarse location and journey trajectory according to your privacy rules.',
+    badgeState: 'ELEVATED',
+    headline: 'Safety Escalation Active',
+    description: "We couldn't confirm your safety after prompts. Your configured trusted contacts have been notified according to your rules.",
     icon: Activity,
     accentBorder: 'border-l-orange-500',
-    badgeState: 'ELEVATED',
-    bgTint: 'bg-orange-50/50',
-    indicatorColor: 'bg-orange-500',
+    bgTint: 'bg-orange-50/60',
     textColor: 'text-orange-800'
   },
   CRISIS: {
-    bannerTitle: 'CRISIS ESCALATION',
-    headline: 'Emergency Circle Activated',
-    description: 'Safety state escalated to Crisis. High-priority alerts dispatched to designated emergency contacts with authorized live telemetry packets.',
-    icon: AlertCircle,
-    accentBorder: 'border-l-red-500',
     badgeState: 'CRISIS',
-    bgTint: 'bg-red-50/50',
-    indicatorColor: 'bg-red-500',
-    textColor: 'text-red-800'
+    headline: 'Emergency Protection Active',
+    description: "Emergency condition active. Full emergency contacts notified with permitted situational details and live GPS.",
+    icon: AlertCircle,
+    accentBorder: 'border-l-rose-600',
+    bgTint: 'bg-rose-50/60',
+    textColor: 'text-rose-800'
   }
 };
 
-const SafetyStatusCard = () => {
+const SafetyStatusCard = ({ onOpenEvidence }) => {
   const { safetyState } = useSafetyState();
   const navigate = useNavigate();
   const details = STATE_DETAILS[safetyState] || STATE_DETAILS.NORMAL;
   const Icon = details.icon;
 
   return (
-    <Card className={`border-l-4 ${details.accentBorder} ${details.bgTint} transition-all duration-300 relative overflow-hidden`}>
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-white shadow-xs border border-stone-200/70 flex items-center justify-center shrink-0">
-            <Icon className="w-6 h-6 text-stone-800" />
+    <Card className={`border-l-4 ${details.accentBorder} ${details.bgTint} transition-colors duration-200`}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-3 border-b border-stone-200/60">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-rose-600 shadow-xs border border-stone-200/80">
+            <Icon className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold uppercase tracking-wider text-stone-500">
-                {details.bannerTitle}
-              </span>
+            <div className="flex items-center gap-2">
               <StatusBadge state={safetyState} size="sm" />
+              <span className="text-xs text-stone-500 font-medium">Deterministic Rule Authority</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight mb-2">
+            <h2 className="text-lg sm:text-xl font-extrabold text-stone-900 tracking-tight mt-0.5">
               {details.headline}
             </h2>
-            <p className="text-sm text-stone-600 max-w-2xl leading-relaxed">
-              {details.description}
-            </p>
           </div>
         </div>
 
-        <div className="flex flex-row sm:flex-col items-end justify-between sm:justify-start gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-200/50">
-          <button
-            onClick={() => navigate('/demo')}
-            className="text-xs font-semibold text-rose-700 hover:text-rose-800 flex items-center gap-1 hover:underline cursor-pointer bg-white/80 px-3 py-1.5 rounded-xl border border-rose-100"
-          >
-            <span>Simulate States</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        {/* Emergency SOS Quick Hold Button */}
+        <EmergencyHoldButton onOpenEvidence={onOpenEvidence} className="w-full sm:w-auto" />
+      </div>
+
+      <div className="pt-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <p className="text-stone-700 leading-relaxed max-w-2xl">
+          {details.description}
+        </p>
+
+        <button
+          onClick={() => navigate('/alerts')}
+          className="flex items-center gap-1 font-bold text-rose-600 hover:text-rose-700 whitespace-nowrap transition-colors"
+        >
+          <span>Safety Timeline</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Honest AI / Detection transparency notice */}
+      <div className="mt-3 pt-2.5 border-t border-stone-200/40 flex items-center gap-1.5 text-[11px] text-stone-500">
+        <Info className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+        <span>
+          SafeCircle uses explainable journey signals and user safety rules — not invasive black-box tracking.
+        </span>
       </div>
     </Card>
   );

@@ -1,7 +1,17 @@
 const express = require('express');
 const contactController = require('../controllers/contactController');
+const optionalAuth = require('../middleware/optionalAuth');
 
 const router = express.Router();
+
+router.use(optionalAuth);
+
+// Multi-Account Invitation & Ward endpoints
+router.post('/invite', contactController.inviteContact);
+router.get('/invitations/pending', contactController.getPendingInvitations);
+router.post('/invitations/:id/respond', contactController.respondToInvitation);
+router.get('/wards', contactController.getWards);
+router.get('/wards/:journeyId/view', contactController.getWardJourneyView);
 
 // GET all contacts / POST new contact
 router.route('/')

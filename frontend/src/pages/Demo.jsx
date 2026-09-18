@@ -22,10 +22,12 @@ import {
   ShieldAlert,
   Smartphone,
   Watch,
-  Wifi,
-  WifiOff,
   Calculator,
-  Power
+  Power,
+  Users,
+  PhoneOff,
+  Eye,
+  ChevronRight
 } from 'lucide-react';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
@@ -116,10 +118,140 @@ const Demo = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [toast, setToast] = useState({ message: '', type: 'success' });
+  const [activeScenarioId, setActiveScenarioId] = useState(1);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
   };
+
+  const HACKATHON_SCENARIOS = [
+    {
+      id: 1,
+      title: '1. Normal Commute',
+      state: 'NORMAL',
+      stateColor: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      summary: 'Safe transit within designated corridor with differential privacy.',
+      trigger: 'Transit conforms to customary SafePath route. Sensory & speed telemetry within normal bounds (Score: 0).',
+      userView: 'Green shield icon, "NORMAL" safety state. Route progress and estimated arrival time displayed. No intrusive alerts or sirens.',
+      contactView: 'Mom & Dad see "In Transit (Safe)", expected arrival time. Differential privacy active: Exact GPS coordinates and live map breadcrumbs are strictly withheld to protect user privacy.',
+      technicalNote: 'Zero intrusive surveillance during normal conditions protects user autonomy and battery life.',
+      run: async (journeyId) => {
+        await Promise.all([
+          checkInService.resetCheckIns(journeyId).catch(() => null),
+          safetyStateService.resetSafetySimulation(journeyId),
+          anomalyService.clearSignals(journeyId).catch(() => null),
+          deviceService.resetDeviceState(journeyId).catch(() => null)
+        ]);
+      }
+    },
+    {
+      id: 2,
+      title: '2. Route Deviation / Safe Detour',
+      state: 'CAUTION',
+      stateColor: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Sensory variance detected when departing expected transit corridor.',
+      trigger: 'Sensory Variance: Continuous GPS displacement > 300 meters from corridor (+25 score).',
+      userView: 'Amber "CAUTION" banner. Gentle in-app check-in inquiry: "Are you on track?" with one-tap "Confirm Safe" button.',
+      contactView: 'Guardians see "Caution: Route variation near Commercial District". Permitted disclosure: Broad transit sector (no micro-breadcrumbs or audio).',
+      technicalNote: 'Progressive disclosure tier 1: Circle members are informed of variance without compromising full user location privacy.',
+      run: async (journeyId) => {
+        await anomalyService.simulateAnomaly(journeyId, {
+          type: 'ROUTE_DEVIATION',
+          description: 'Corridor deviation detected (+25 pts)',
+          metadata: { deviationMeters: 380 }
+        });
+      }
+    },
+    {
+      id: 3,
+      title: '3. Missed Check-In / No Response',
+      state: 'ELEVATED',
+      stateColor: 'bg-orange-100 text-orange-950 border-orange-300',
+      summary: 'Prompt expired without confirmation; tiered escalation begins.',
+      trigger: 'Prompt Timeout: 2-minute checkpoint expires without response (+25 score, total >= 50).',
+      userView: 'Urgent vibrating notification. Prominent 60-second countdown prompt before guardian dispatch.',
+      contactView: 'Primary Guardian (Mom) receives Push & SMS: "SafeCircle: Check-in unacknowledged for Person". Permitted disclosures: live corridor coordinates, phone battery level (84%), and signal quality.',
+      technicalNote: 'Tiered escalation protocol: Mom (Priority 1) is notified first to avoid alarming the entire circle unnecessarily.',
+      run: async (journeyId) => {
+        await anomalyService.simulateAnomaly(journeyId, {
+          type: 'PROLONGED_STOP',
+          description: 'Stationary dwell detected (+20 pts)',
+          metadata: { stopDurationMinutes: 10 }
+        }).catch(() => null);
+        const pastDue = new Date(Date.now() - 60 * 1000).toISOString();
+        await checkInService.createCheckIn(journeyId, { dueAt: pastDue }).catch(() => null);
+        await checkInService.checkMissedCheckIns(journeyId).catch(() => null);
+      }
+    },
+    {
+      id: 4,
+      title: '4. Panic Button / SOS Triggered',
+      state: 'CRISIS',
+      stateColor: 'bg-red-100 text-red-900 border-red-300',
+      summary: 'Immediate distress override straight to highest tier.',
+      trigger: 'Emergency SOS button pressed or discreet keypad trigger (911/0000). Score override straight to 100.',
+      userView: 'Red flashing crisis screen. Emergency audio beacon recording active. Quick-dial helper for Mom and Police 112.',
+      contactView: 'Urgent distress siren to all circle members (Mom, Dad, Primary). Full emergency disclosure: Exact GPS pin, nearest street address, battery level, emergency medical notes (Blood O+, Asthma Inhaler).',
+      technicalNote: 'Crisis tier bypasses all delays. Differential privacy unlocks full visibility for immediate rescue coordination.',
+      run: async (journeyId) => {
+        await safetyStateService.addEvent(journeyId, {
+          type: 'EMERGENCY_ACTIVATED',
+          description: 'Emergency distress beacon activated by user',
+          source: 'USER'
+        });
+      }
+    },
+    {
+      id: 5,
+      title: '5. Fallback: GPS Signal Lost',
+      state: 'CAUTION',
+      stateColor: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Transit enters underground subway tunnel or parking garage.',
+      trigger: 'Telemetry Gap: GNSS receiver loses satellite fix for > 3 minutes (+15 score).',
+      userView: '"GPS Lost — Dead Reckoning Fallback Active" notice. Last verified waypoint pinned.',
+      contactView: 'Ward escort card shows "Last Verified Location (3 mins ago near Metro Tunnel)" with approximate 140m accuracy radius.',
+      technicalNote: 'System transparently flags telemetry uncertainty rather than plotting fake GPS predictions.',
+      run: async (journeyId) => {
+        await anomalyService.simulateAnomaly(journeyId, {
+          type: 'GPS_SIGNAL_LOST',
+          description: 'Satellite fix lost in tunnel (+15 pts)',
+          metadata: { lastKnownLocation: 'Metro Underground Tunnel', accuracyMeters: 140 }
+        });
+      }
+    },
+    {
+      id: 6,
+      title: '6. Fallback: Internet Disconnected',
+      state: 'CAUTION',
+      stateColor: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Cellular data disconnected in dead zone or airplane mode.',
+      trigger: 'Network Dropout: WebSocket heartbeat drops. Phone detects network offline.',
+      userView: 'Top offline banner appears: "Offline Mode Active. Local safety engine caching telemetry. SMS fallback queued."',
+      contactView: 'Mom & Dad receive "Connection Dropped" notice with last synced timestamp. Backend inactivity watchdog countdown armed.',
+      technicalNote: 'SafeCircle evaluates safety state locally in-browser and prepares native SMS dispatch if offline > 5 minutes.',
+      run: async (journeyId) => {
+        await anomalyService.simulateAnomaly(journeyId, {
+          type: 'DEVICE_OFFLINE',
+          description: 'Cellular data link lost (+10 pts)',
+          metadata: { networkType: 'NONE' }
+        });
+      }
+    },
+    {
+      id: 7,
+      title: '7. Fallback: Phone Turned Off / Disconnected',
+      state: 'CAUTION',
+      stateColor: 'bg-amber-100 text-amber-900 border-amber-300',
+      summary: 'Battery exhausts or device is powered off without safe arrival.',
+      trigger: 'Abrupt Telemetry Termination: Escort heartbeat ceases without safe completion or cancellation.',
+      userView: 'Companion wearable elevates to active fallback source (simulated). Phone screen powered down.',
+      contactView: 'Contact view warns "Phone Unreachable (Last ping: 4:18 PM)". Companion wearable fallback engaged. Level 2 escalation arms on server watchdog.',
+      technicalNote: 'Honest Boundary: No mobile app can track after complete hardware shutdown. SafeCircle relies on wearable companion handoff and server-side inactivity watchdogs.',
+      run: async (journeyId) => {
+        await deviceService.simulatePhoneUnavailable(journeyId);
+      }
+    }
+  ];
 
   const loadAllSimulatorData = useCallback(async () => {
     setIsLoading(true);
@@ -182,6 +314,25 @@ const Demo = () => {
       }
     } catch (err) {
       console.warn('Failed to refresh simulator state:', err);
+    }
+  };
+
+  // Trigger dedicated Hackathon Demo Scenario
+  const handleTriggerScenario = async (scenario) => {
+    if (!activeJourney) {
+      showToast('No active escort journey found to run scenario.', 'error');
+      return;
+    }
+    setActiveScenarioId(scenario.id);
+    setIsProcessing(true);
+    try {
+      await scenario.run(activeJourney.id);
+      await refreshSimulatorState();
+      showToast(`Activated Scenario ${scenario.id}: ${scenario.title}`, 'info');
+    } catch (err) {
+      showToast(err.message || 'Failed to activate demo scenario', 'error');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -433,17 +584,18 @@ const Demo = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold mb-1.5">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Complete System Simulator · Phase 13 Final</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-black tracking-wide mb-1.5 uppercase">
+            <Sparkles className="w-3.5 h-3.5 text-amber-700" />
+            <span>HACKATHON DEMO — SIMULATION ONLY</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight">
-            SafeCircle Demo Simulator
+            Hackathon Demo Simulator
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            Interactive laboratory to demonstrate Safety State transitions, Check-In prompts, Circle Escalations, Anomaly Intelligence, Device Fallback, and Discreet Mode.
+            Safely simulate multi-tier escalations, route deviations, and two-phone progressive disclosure without contacting real emergency responders.
           </p>
         </div>
+
 
         <div className="flex items-center gap-2">
           <Button
@@ -481,6 +633,166 @@ const Demo = () => {
         </Card>
       )}
 
+      {/* HACKATHON CORE 7 DEMONSTRATION SCENARIOS */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-200/80 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-rose-600" />
+              <h2 className="text-lg font-black text-stone-900 tracking-tight">
+                7 Core Hackathon Demonstration Scenarios
+              </h2>
+            </div>
+            <p className="text-xs text-stone-600 mt-0.5">
+              One-click live workflow demonstration of SafeCircle's progressive privacy and safety escalation across 3 devices (Person, Mom, Dad).
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full">
+              SIMULATION ONLY
+            </span>
+          </div>
+        </div>
+
+        {/* 7 Scenario Buttons Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+          {HACKATHON_SCENARIOS.map((sc) => {
+            const isSelected = activeScenarioId === sc.id;
+            return (
+              <button
+                key={sc.id}
+                type="button"
+                disabled={isProcessing}
+                onClick={() => handleTriggerScenario(sc)}
+                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between shadow-2xs ${
+                  isSelected
+                    ? 'bg-rose-50 border-rose-400 ring-2 ring-rose-200 shadow-sm'
+                    : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50/50'
+                } disabled:opacity-50`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-mono font-bold text-stone-500">#{sc.id}</span>
+                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border ${sc.stateColor}`}>
+                      {sc.state}
+                    </span>
+                  </div>
+                  <div className="text-xs font-bold text-stone-900 leading-tight">
+                    {sc.title.replace(/^\d+\.\s*/, '')}
+                  </div>
+                </div>
+                <div className="mt-2 pt-1 border-t border-stone-100 text-[10px] text-stone-500 line-clamp-1">
+                  {sc.summary}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Active Scenario Detailed Spotlight Panel */}
+        {(() => {
+          const sc = HACKATHON_SCENARIOS.find(s => s.id === activeScenarioId) || HACKATHON_SCENARIOS[0];
+          return (
+            <Card className="border-2 border-stone-300 bg-white shadow-sm space-y-4">
+              {/* Spotlight Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-stone-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center font-black text-base border border-rose-100">
+                    {sc.id}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-black text-stone-900">{sc.title}</h3>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${sc.stateColor}`}>
+                        {sc.state}
+                      </span>
+                    </div>
+                    <p className="text-xs text-stone-600 mt-0.5 font-medium">{sc.summary}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => handleTriggerScenario(sc)}
+                    disabled={isProcessing}
+                    size="sm"
+                    variant="primary"
+                    icon={Zap}
+                  >
+                    Re-Trigger Scenario #{sc.id}
+                  </Button>
+                </div>
+              </div>
+
+              {/* 3-Column Scenario Detail Matrix */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                {/* 1. Trigger */}
+                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 font-bold text-stone-800">
+                    <Activity className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>Trigger Condition</span>
+                  </div>
+                  <p className="text-stone-700 leading-relaxed font-medium">{sc.trigger}</p>
+                </div>
+
+                {/* 2. User View */}
+                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 font-bold text-stone-800">
+                    <Smartphone className="w-4 h-4 text-emerald-700 shrink-0" />
+                    <span>Phone 1: Person (User) Sees</span>
+                  </div>
+                  <p className="text-stone-700 leading-relaxed font-medium">{sc.userView}</p>
+                </div>
+
+                {/* 3. Contact View */}
+                <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200/80 space-y-2">
+                  <div className="flex items-center gap-1.5 font-bold text-stone-800">
+                    <Users className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>Phones 2 & 3: Mom & Dad See</span>
+                  </div>
+                  <p className="text-stone-700 leading-relaxed font-medium">{sc.contactView}</p>
+                </div>
+              </div>
+
+              {/* Technical Boundaries & Realism Note */}
+              <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-[11px] text-amber-900 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-amber-950">
+                  <Info className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+                  <span>Technical & Operating System Boundaries</span>
+                </div>
+                <p className="leading-relaxed">{sc.technicalNote}</p>
+              </div>
+
+              {/* Navigation Stepper between Scenarios */}
+              <div className="flex items-center justify-between pt-2 border-t border-stone-100 text-xs">
+                <button
+                  type="button"
+                  disabled={sc.id === 1 || isProcessing}
+                  onClick={() => handleTriggerScenario(HACKATHON_SCENARIOS[sc.id - 2])}
+                  className="px-3 py-1.5 rounded-xl border border-stone-200 font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-30 cursor-pointer"
+                >
+                  ← Previous Scenario
+                </button>
+
+                <span className="font-mono text-[11px] text-stone-400">
+                  Scenario {sc.id} of 7
+                </span>
+
+                <button
+                  type="button"
+                  disabled={sc.id === 7 || isProcessing}
+                  onClick={() => handleTriggerScenario(HACKATHON_SCENARIOS[sc.id])}
+                  className="px-3 py-1.5 rounded-xl bg-stone-900 text-white font-bold hover:bg-stone-800 disabled:opacity-30 cursor-pointer flex items-center gap-1"
+                >
+                  <span>Next Scenario</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </Card>
+          );
+        })()}
+      </div>
+
       {/* PHASE 8: CHECK-IN & ESCALATION SIMULATOR SECTION */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -494,8 +806,9 @@ const Demo = () => {
             </p>
           </div>
           <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200">
-            Phase 8 Active
+            Simulation Toolbar
           </span>
+
         </div>
 
         {/* Check-In Action Toolbar */}

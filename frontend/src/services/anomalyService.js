@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 /**
  * Service to interact with Phase 10 Anomaly Intelligence endpoints
@@ -11,7 +11,7 @@ export const anomalyService = {
    * @returns {Promise<Object>} Anomaly analysis payload
    */
   async getAnomalyAnalysis(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/anomaly-analysis`);
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/anomaly-analysis`);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || 'Failed to fetch anomaly analysis');
@@ -27,7 +27,7 @@ export const anomalyService = {
    * @returns {Promise<Object>} State evaluation and updated analysis
    */
   async simulateAnomaly(journeyId, signalPayload) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/anomaly-signals`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/anomaly-signals`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(signalPayload)
@@ -46,7 +46,7 @@ export const anomalyService = {
    * @returns {Promise<Object>} Reset outcome
    */
   async clearSignals(journeyId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/anomaly-clear`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/anomaly-clear`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });

@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 export const SAFETY_STATES = ['NORMAL', 'CAUTION', 'ELEVATED', 'CRISIS'];
 
@@ -58,9 +58,11 @@ export const DEFAULT_PERMISSIONS = {
 };
 
 const request = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${getApiBaseUrl()}${endpoint}`;
+  const token = localStorage.getItem('token');
   const headers = {
     'Content-Type': 'application/json',
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
     ...(options.headers || {})
   };
 
@@ -98,6 +100,42 @@ export const contactService = {
       method: 'POST',
       body: JSON.stringify(contactData)
     });
+    return res.data;
+  },
+
+  // Invite trusted contact (creates contact and pending invitation)
+  inviteContact: async (invitationData) => {
+    const res = await request('/api/contacts/invite', {
+      method: 'POST',
+      body: JSON.stringify(invitationData)
+    });
+    return res.data;
+  },
+
+  // Get pending invitations for logged-in user
+  getPendingInvitations: async () => {
+    const res = await request('/api/contacts/invitations/pending');
+    return res.data || [];
+  },
+
+  // Respond to invitation (ACCEPTED or REJECTED)
+  respondToInvitation: async (invitationId, status) => {
+    const res = await request(`/api/contacts/invitations/${invitationId}/respond`, {
+      method: 'POST',
+      body: JSON.stringify({ status })
+    });
+    return res.data;
+  },
+
+  // Get wards (people who have invited logged-in user to their safety circle)
+  getWards: async () => {
+    const res = await request('/api/contacts/wards');
+    return res.data || [];
+  },
+
+  // Get live journey view of a ward
+  getWardJourneyView: async (journeyId, contactId) => {
+    const res = await request(`/api/contacts/wards/${journeyId}/view?contactId=${encodeURIComponent(contactId)}`);
     return res.data;
   },
 

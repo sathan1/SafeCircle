@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { ArrowLeft, Shield, Eye, ShieldAlert, CheckCircle2, Info } from 'lucide-react';
 import { useSafetyState } from '../../contexts/SafetyStateContext';
 
+import { mobileDiscreetService } from '../../services/native/mobileDiscreetService';
+import { safetyStateService } from '../../services/safetyStateService';
+
 const DiscreetCalculator = () => {
-  const { toggleDiscreetMode, activeJourney, safetyState } = useSafetyState();
+  const { toggleDiscreetMode, activeJourney, safetyState, setSafetyState } = useSafetyState();
   const [display, setDisplay] = useState('0');
   const [equation, setEquation] = useState('');
   const [isNewNumber, setIsNewNumber] = useState(true);
   const [discreetAlertTriggered, setDiscreetAlertTriggered] = useState(false);
+  const [bannerHidden, setBannerHidden] = useState(false);
 
   const handleDigit = (digit) => {
     if (isNewNumber) {
@@ -29,10 +33,33 @@ const DiscreetCalculator = () => {
     setIsNewNumber(true);
   };
 
-  const handleCalculate = () => {
-    // Check for discreet safety trigger simulation (e.g. 911 or 0000)
+  const handleCalculate = async () => {
+    // 1. Check for PIN unlock match
+    if (mobileDiscreetService.verifyPin(display)) {
+      setDisplay('0');
+      setEquation('');
+      setIsNewNumber(true);
+      toggleDiscreetMode();
+      return;
+    }
+
+    // 2. Check for discreet emergency trigger simulation (e.g. 911 or 0000)
     if (display === '911' || display === '0000') {
       setDiscreetAlertTriggered(true);
+      if (setSafetyState) {
+        setSafetyState('CRISIS', 'Discreet silent SOS triggered from Calculator utility');
+      }
+      if (activeJourney?.id) {
+        try {
+          await safetyStateService.addEvent(activeJourney.id, {
+            type: 'NEED_HELP',
+            description: 'Discreet silent distress beacon sent via calculator keypad',
+            source: 'USER'
+          });
+        } catch (e) {
+          console.warn('[DiscreetCalculator] SOS dispatch warning:', e);
+        }
+      }
       setTimeout(() => setDiscreetAlertTriggered(false), 4000);
       setDisplay('0');
       setEquation('');
@@ -71,21 +98,41 @@ const DiscreetCalculator = () => {
 
   return (
     <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-4 selection:bg-stone-200">
-      {/* Safe Return Banner: Obvious, user-controlled way to return to normal SafeCircle */}
-      <div className="w-full max-w-sm mb-3">
-        <button
-          onClick={toggleDiscreetMode}
-          className="w-full py-2 px-3 rounded-xl bg-white border border-stone-300 shadow-2xs hover:bg-stone-50 flex items-center justify-between text-xs font-semibold text-stone-700 transition-colors cursor-pointer"
-        >
-          <span className="flex items-center gap-1.5">
-            <ArrowLeft className="w-4 h-4 text-stone-500" />
-            <span>Return to SafeCircle (Standard Mode)</span>
-          </span>
-          <span className="text-[10px] text-stone-600 bg-stone-200/80 px-2 py-0.5 rounded-md font-mono">
-            Exit Discreet View
-          </span>
-        </button>
-      </div>
+      {/* Safe Return Banner / PIN guidance */}
+      {!bannerHidden ? (
+        <div className="w-full max-w-sm mb-3 space-y-1.5">
+          <button
+            onClick={toggleDiscreetMode}
+            className="w-full py-2 px-3 rounded-xl bg-white border border-stone-300 shadow-2xs hover:bg-stone-50 flex items-center justify-between text-xs font-semibold text-stone-700 transition-colors cursor-pointer"
+          >
+            <span className="flex items-center gap-1.5">
+              <ArrowLeft className="w-4 h-4 text-stone-500" />
+              <span>Return to SafeCircle</span>
+            </span>
+            <span className="text-[10px] text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md font-mono">
+              Exit Discreet View
+            </span>
+          </button>
+          <div className="flex items-center justify-between px-1 text-[11px] text-stone-500">
+            <span>Tip: Enter your 4-digit PIN and press <strong>=</strong> to unlock</span>
+            <button
+              onClick={() => setBannerHidden(true)}
+              className="text-stone-400 hover:text-stone-700 underline text-[10px] cursor-pointer"
+            >
+              Hide banner
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full max-w-sm mb-2 text-right">
+          <button
+            onClick={() => setBannerHidden(false)}
+            className="text-[10px] text-stone-400 hover:text-stone-600 underline cursor-pointer"
+          >
+            Show return banner
+          </button>
+        </div>
+      )}
 
       {/* Calculator Body */}
       <div className="w-full max-w-sm bg-stone-900 rounded-3xl p-5 shadow-xl border border-stone-800 flex flex-col">

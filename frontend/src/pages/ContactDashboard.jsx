@@ -119,7 +119,7 @@ export default function ContactDashboard() {
 
   // Fetch selected contact view whenever journey, contact, or state changes
   useEffect(() => {
-    if (!activeJourney || !selectedContactId) return;
+    if (!activeJourney?.id || !selectedContactId) return;
 
     async function fetchView() {
       setViewLoading(true);
@@ -135,7 +135,31 @@ export default function ContactDashboard() {
     }
 
     fetchView();
+
+    // Live polling for two-phone synchronization across cellular networks
+    const pollInterval = setInterval(async () => {
+      try {
+        const [latestJourney, updatedView] = await Promise.all([
+          journeyService.getJourneyById(activeJourney.id),
+          contactDashboardService.getContactView(activeJourney.id, selectedContactId)
+        ]);
+
+        if (latestJourney && latestJourney.currentState !== activeJourney.currentState) {
+          setActiveJourney(prev => ({ ...prev, currentState: latestJourney.currentState }));
+          if (setGlobalSafetyState) setGlobalSafetyState(latestJourney.currentState);
+        }
+
+        if (updatedView) {
+          setContactView(updatedView);
+        }
+      } catch (e) {
+        // Ignore background poll errors
+      }
+    }, 2500);
+
+    return () => clearInterval(pollInterval);
   }, [activeJourney?.id, activeJourney?.currentState, selectedContactId]);
+
 
   // Fetch Comparison views
   useEffect(() => {
@@ -239,15 +263,16 @@ export default function ContactDashboard() {
           </div>
         </div>
 
-        {/* Prototype Realism Disclaimer Banner */}
+        {/* Privacy Enforcement Notice */}
         <div className="p-3.5 rounded-xl bg-stone-50 border border-stone-200/80 flex items-start gap-3">
           <ShieldCheck className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div className="text-xs text-stone-700 leading-relaxed">
-            <span className="font-semibold text-stone-900">Backend Source of Truth Principle: </span>
-            Restricted information is completely stripped on the server side. Sensitive coordinates or route details are never sent to unauthorized recipients and hidden with CSS.
+            <span className="font-semibold text-stone-900">Privacy Enforcement Active: </span>
+            This view reflects exactly what this trusted contact is authorized to inspect. When the safety level escalates, additional information unlocks automatically in real time.
           </div>
         </div>
       </div>
+
 
       {/* 2. Interactive Safety State Changer Bar */}
       <div className="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-xs space-y-3">

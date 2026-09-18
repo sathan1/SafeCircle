@@ -1,0 +1,1198 @@
+{
+  "users": [
+    {
+      "name": "Person User",
+      "email": "person@safecircle.test",
+      "passwordHash": "hashed_password_person",
+      "id": "id_1789663156909_b2ba9c59",
+      "_id": "id_1789663156909_b2ba9c59",
+      "createdAt": "2026-09-17T16:39:16.910Z"
+    },
+    {
+      "name": "Mom",
+      "email": "mom@safecircle.test",
+      "passwordHash": "hashed_password_mom",
+      "id": "id_1789663156913_618e3322",
+      "_id": "id_1789663156913_618e3322",
+      "createdAt": "2026-09-17T16:39:16.913Z"
+    },
+    {
+      "name": "Dad",
+      "email": "dad@safecircle.test",
+      "passwordHash": "hashed_password_dad",
+      "id": "id_1789663156915_b11e5a86",
+      "_id": "id_1789663156915_b11e5a86",
+      "createdAt": "2026-09-17T16:39:16.916Z"
+    },
+    {
+      "id": "user_person_1",
+      "name": "Person User",
+      "email": "user@safecircle.app",
+      "passwordHash": "$2b$10$6cZnStBjy0KmNiXJlBJBRuSUA4b022tJwPs2RAiFjDOm0gXDBXohi"
+    },
+    {
+      "id": "user_mom_1",
+      "name": "Mom",
+      "email": "mom@safecircle.app",
+      "passwordHash": "$2b$10$8Lf.gBm0fUDvRUj8d7wOpexjaGcbcMF1MmUPMRX/OzW1be3Xq9DKK"
+    },
+    {
+      "id": "user_dad_1",
+      "name": "Dad",
+      "email": "dad@safecircle.app",
+      "passwordHash": "$2b$10$nvmiG23zwMqRG4gj7gRjQe0A62g5vAqIcWg3JTfYF30eBIzzTSgc6"
+    }
+  ],
+  "otps": [],
+  "contacts": [
+    {
+      "id": "tc-1789662542637-401",
+      "userId": "demo-user-1",
+      "name": "Aarav (Brother)",
+      "relationship": "Sibling",
+      "phone": "+91 99887 76655",
+      "email": "aarav.demo@example.com",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "SMS",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:02.637Z",
+      "_id": "tc-1789662542637-401",
+      "updatedAt": "2026-09-17T16:29:02.645Z"
+    },
+    {
+      "id": "tc-1789662576899-791",
+      "userId": "demo-user-1",
+      "name": "Aarav (Brother)",
+      "relationship": "Sibling",
+      "phone": "+91 99887 76655",
+      "email": "aarav.demo@example.com",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "SMS",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:36.899Z",
+      "_id": "tc-1789662576899-791",
+      "updatedAt": "2026-09-17T16:29:36.905Z"
+    },
+    {
+      "id": "tc-1789662593895-520",
+      "userId": "id_1789662593886_f0e2df9b",
+      "name": "Mom",
+      "relationship": "Parent",
+      "phone": "+1 555-0101",
+      "email": "mom@safecircle.test",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:53.895Z",
+      "_id": "tc-1789662593895-520"
+    },
+    {
+      "id": "tc-1789662593899-84",
+      "userId": "id_1789662593886_f0e2df9b",
+      "name": "Dad",
+      "relationship": "Parent",
+      "phone": "+1 555-0102",
+      "email": "dad@safecircle.test",
+      "priority": 2,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:53.899Z",
+      "_id": "tc-1789662593899-84"
+    },
+    {
+      "id": "tc-1789662622070-15",
+      "userId": "id_1789662622063_674b0467",
+      "name": "Mom",
+      "relationship": "Parent",
+      "phone": "+1 555-0101",
+      "email": "mom@safecircle.test",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:30:22.070Z",
+      "_id": "tc-1789662622070-15"
+    },
+    {
+      "id": "tc-1789662622074-998",
+      "userId": "id_1789662622063_674b0467",
+      "name": "Dad",
+      "relationship": "Parent",
+      "phone": "+1 555-0102",
+      "email": "dad@safecircle.test",
+      "priority": 2,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:30:22.074Z",
+      "_id": "tc-1789662622074-998"
+    },
+    {
+      "id": "tc-1789663156918-518",
+      "userId": "id_1789663156909_b2ba9c59",
+      "name": "Mom",
+      "relationship": "Parent",
+      "phone": "+1 555-0101",
+      "email": "mom@safecircle.test",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:39:16.918Z",
+      "_id": "tc-1789663156918-518"
+    },
+    {
+      "id": "tc-1789663156923-135",
+      "userId": "id_1789663156909_b2ba9c59",
+      "name": "Dad",
+      "relationship": "Parent",
+      "phone": "+1 555-0102",
+      "email": "dad@safecircle.test",
+      "priority": 2,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:39:16.923Z",
+      "_id": "tc-1789663156923-135"
+    },
+    {
+      "id": "tc-1789663164226-619",
+      "userId": "demo-user-1",
+      "name": "Aarav (Brother)",
+      "relationship": "Sibling",
+      "phone": "+91 99887 76655",
+      "email": "aarav.demo@example.com",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "SMS",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:39:24.227Z",
+      "_id": "tc-1789663164226-619",
+      "updatedAt": "2026-09-17T16:39:24.232Z"
+    },
+    {
+      "id": "tc-1789664234370-652",
+      "userId": "user_person_1",
+      "name": "Mom",
+      "relationship": "Parent",
+      "phone": "+91 98765 43210",
+      "email": "mom@safecircle.app",
+      "priority": 1,
+      "isActive": true,
+      "notificationPreference": "Push",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:57:14.370Z",
+      "_id": "tc-1789664234370-652",
+      "updatedAt": "2026-09-17T16:58:06.928Z"
+    }
+  ],
+  "invitations": [
+    {
+      "fromUserId": "id_1789662593886_f0e2df9b",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "mom@safecircle.test",
+      "toName": "Mom",
+      "relationship": "Parent",
+      "contactId": "tc-1789662593895-520",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:53.897Z",
+      "id": "id_1789662593897_262a5a6e",
+      "_id": "id_1789662593897_262a5a6e",
+      "toUserId": "id_1789662593891_9eb1703e",
+      "updatedAt": "2026-09-17T16:29:53.904Z"
+    },
+    {
+      "fromUserId": "id_1789662593886_f0e2df9b",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "dad@safecircle.test",
+      "toName": "Dad",
+      "relationship": "Parent",
+      "contactId": "tc-1789662593899-84",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:29:53.901Z",
+      "id": "id_1789662593901_b4879f83",
+      "_id": "id_1789662593901_b4879f83",
+      "toUserId": "id_1789662593892_bb19ad7f",
+      "updatedAt": "2026-09-17T16:29:53.906Z"
+    },
+    {
+      "fromUserId": "id_1789662622063_674b0467",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "mom@safecircle.test",
+      "toName": "Mom",
+      "relationship": "Parent",
+      "contactId": "tc-1789662622070-15",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:30:22.072Z",
+      "id": "id_1789662622072_95a0674b",
+      "_id": "id_1789662622072_95a0674b",
+      "toUserId": "id_1789662622065_76e01fbc",
+      "updatedAt": "2026-09-17T16:30:22.078Z"
+    },
+    {
+      "fromUserId": "id_1789662622063_674b0467",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "dad@safecircle.test",
+      "toName": "Dad",
+      "relationship": "Parent",
+      "contactId": "tc-1789662622074-998",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:30:22.076Z",
+      "id": "id_1789662622076_c273beb8",
+      "_id": "id_1789662622076_c273beb8",
+      "toUserId": "id_1789662622067_573f31a5",
+      "updatedAt": "2026-09-17T16:30:22.081Z"
+    },
+    {
+      "fromUserId": "id_1789663156909_b2ba9c59",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "mom@safecircle.test",
+      "toName": "Mom",
+      "relationship": "Parent",
+      "contactId": "tc-1789663156918-518",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:39:16.920Z",
+      "id": "id_1789663156920_7933665b",
+      "_id": "id_1789663156920_7933665b",
+      "toUserId": "id_1789663156913_618e3322",
+      "updatedAt": "2026-09-17T16:39:16.928Z"
+    },
+    {
+      "fromUserId": "id_1789663156909_b2ba9c59",
+      "fromUserName": "Person User",
+      "fromUserEmail": "person@safecircle.test",
+      "toEmail": "dad@safecircle.test",
+      "toName": "Dad",
+      "relationship": "Parent",
+      "contactId": "tc-1789663156923-135",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:39:16.925Z",
+      "id": "id_1789663156925_8e0dc4c0",
+      "_id": "id_1789663156925_8e0dc4c0",
+      "toUserId": "id_1789663156915_b11e5a86",
+      "updatedAt": "2026-09-17T16:39:16.930Z"
+    },
+    {
+      "fromUserId": "user_person_1",
+      "fromUserName": "Person User",
+      "fromUserEmail": "user@safecircle.app",
+      "toEmail": "mom@safecircle.app",
+      "toName": "Mom",
+      "relationship": "Mother",
+      "contactId": "tc-1789664234370-652",
+      "status": "REJECTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:57:14.374Z",
+      "id": "id_1789664234374_189aba46",
+      "_id": "id_1789664234374_189aba46",
+      "toUserId": "user_mom_1",
+      "updatedAt": "2026-09-17T16:57:28.351Z"
+    },
+    {
+      "fromUserId": "user_person_1",
+      "fromUserName": "Person User",
+      "fromUserEmail": "user@safecircle.app",
+      "toEmail": "mom@safecircle.app",
+      "toName": "Mom",
+      "relationship": "Parent",
+      "contactId": "tc-1789664234370-652",
+      "status": "ACCEPTED",
+      "permissions": {
+        "NORMAL": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": false,
+          "JOURNEY_DETAILS": false
+        },
+        "CAUTION": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": false,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": false
+        },
+        "ELEVATED": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": false,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        },
+        "CRISIS": {
+          "JOURNEY_STATUS": true,
+          "APPROXIMATE_LOCATION": true,
+          "LIVE_LOCATION": true,
+          "EMERGENCY_STATUS": true,
+          "JOURNEY_DETAILS": true
+        }
+      },
+      "createdAt": "2026-09-17T16:58:06.931Z",
+      "id": "id_1789664286931_bf3ef43d",
+      "_id": "id_1789664286931_bf3ef43d",
+      "toUserId": "user_mom_1",
+      "updatedAt": "2026-09-17T16:58:06.958Z"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j-1789662542647",
+      "userId": "demo-user-1",
+      "startLocation": {
+        "name": "Campus Science Block",
+        "latitude": 12.9716,
+        "longitude": 77.5946
+      },
+      "destination": {
+        "name": "Metro Station West",
+        "latitude": 12.952,
+        "longitude": 77.612
+      },
+      "expectedArrival": "2026-09-17T16:59:02.647Z",
+      "startedAt": "2026-09-17T16:29:02.647Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9716,
+        "longitude": 77.5946,
+        "accuracy": 10,
+        "timestamp": 1789662542647
+      },
+      "selectedContacts": [
+        "tc-1789662542637-401"
+      ],
+      "selectedRoute": {
+        "routeId": "safepath-commercial-lit",
+        "name": "Lit Boulevard SafePath (High Visibility)",
+        "distance": "3.2 km",
+        "estimatedDuration": "14 mins",
+        "routeType": "SAFEPATH",
+        "contextualEstimate": "Continuous street illumination & emergency escort beacons",
+        "signals": [
+          "Continuous LED lighting",
+          "Active commercial storefronts",
+          "High phone signal density"
+        ],
+        "waypoints": [
+          [
+            12.9716,
+            77.5946
+          ],
+          [
+            12.964,
+            77.601
+          ],
+          [
+            12.952,
+            77.612
+          ]
+        ]
+      },
+      "notes": "Heading home via transit corridor",
+      "createdAt": "2026-09-17T16:29:02.647Z",
+      "_id": "j-1789662542647",
+      "updatedAt": "2026-09-17T16:29:02.653Z"
+    },
+    {
+      "id": "j-1789662576907",
+      "userId": "demo-user-1",
+      "startLocation": {
+        "name": "Campus Science Block",
+        "latitude": 12.9716,
+        "longitude": 77.5946
+      },
+      "destination": {
+        "name": "Metro Station West",
+        "latitude": 12.952,
+        "longitude": 77.612
+      },
+      "expectedArrival": "2026-09-17T16:59:36.907Z",
+      "startedAt": "2026-09-17T16:29:36.907Z",
+      "endedAt": "2026-09-17T16:29:36.926Z",
+      "status": "COMPLETED",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9716,
+        "longitude": 77.5946,
+        "accuracy": 10,
+        "timestamp": 1789662576907
+      },
+      "selectedContacts": [
+        "tc-1789662576899-791"
+      ],
+      "selectedRoute": {
+        "routeId": "safepath-commercial-lit",
+        "name": "Lit Boulevard SafePath (High Visibility)",
+        "distance": "3.2 km",
+        "estimatedDuration": "14 mins",
+        "routeType": "SAFEPATH",
+        "contextualEstimate": "Continuous street illumination & emergency escort beacons",
+        "signals": [
+          "Continuous LED lighting",
+          "Active commercial storefronts",
+          "High phone signal density"
+        ],
+        "waypoints": [
+          [
+            12.9716,
+            77.5946
+          ],
+          [
+            12.964,
+            77.601
+          ],
+          [
+            12.952,
+            77.612
+          ]
+        ]
+      },
+      "notes": "Heading home via transit corridor",
+      "createdAt": "2026-09-17T16:29:36.907Z",
+      "_id": "j-1789662576907",
+      "updatedAt": "2026-09-17T16:29:36.926Z"
+    },
+    {
+      "id": "j-1789662593909",
+      "userId": "id_1789662593886_f0e2df9b",
+      "startLocation": {
+        "name": "Library",
+        "latitude": 12.9784,
+        "longitude": 77.6046
+      },
+      "destination": {
+        "name": "Home",
+        "latitude": 12.9352,
+        "longitude": 77.6245
+      },
+      "expectedArrival": "2026-09-17T16:59:53.908Z",
+      "startedAt": "2026-09-17T16:29:53.909Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9784,
+        "longitude": 77.6046,
+        "accuracy": 10,
+        "timestamp": 1789662593909
+      },
+      "selectedContacts": [
+        "tc-1789662593895-520",
+        "tc-1789662593899-84"
+      ],
+      "selectedRoute": null,
+      "notes": "Heading home by foot",
+      "createdAt": "2026-09-17T16:29:53.909Z",
+      "_id": "j-1789662593909",
+      "updatedAt": "2026-09-17T16:29:53.928Z"
+    },
+    {
+      "id": "j-1789662622084",
+      "userId": "id_1789662622063_674b0467",
+      "startLocation": {
+        "name": "Library",
+        "latitude": 12.9784,
+        "longitude": 77.6046
+      },
+      "destination": {
+        "name": "Home",
+        "latitude": 12.9352,
+        "longitude": 77.6245
+      },
+      "expectedArrival": "2026-09-17T17:00:22.083Z",
+      "startedAt": "2026-09-17T16:30:22.084Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9784,
+        "longitude": 77.6046,
+        "accuracy": 10,
+        "timestamp": 1789662622084
+      },
+      "selectedContacts": [
+        "tc-1789662622070-15",
+        "tc-1789662622074-998"
+      ],
+      "selectedRoute": null,
+      "notes": "Heading home by foot",
+      "createdAt": "2026-09-17T16:30:22.084Z",
+      "_id": "j-1789662622084",
+      "updatedAt": "2026-09-17T16:30:22.103Z"
+    },
+    {
+      "id": "j-1789663156933",
+      "userId": "id_1789663156909_b2ba9c59",
+      "startLocation": {
+        "name": "Library",
+        "latitude": 12.9784,
+        "longitude": 77.6046
+      },
+      "destination": {
+        "name": "Home",
+        "latitude": 12.9352,
+        "longitude": 77.6245
+      },
+      "expectedArrival": "2026-09-17T17:09:16.933Z",
+      "startedAt": "2026-09-17T16:39:16.933Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9784,
+        "longitude": 77.6046,
+        "accuracy": 10,
+        "timestamp": 1789663156933
+      },
+      "selectedContacts": [
+        "tc-1789663156918-518",
+        "tc-1789663156923-135"
+      ],
+      "selectedRoute": null,
+      "notes": "Heading home by foot",
+      "createdAt": "2026-09-17T16:39:16.933Z",
+      "_id": "j-1789663156933",
+      "updatedAt": "2026-09-17T16:39:16.953Z"
+    },
+    {
+      "id": "j-1789663164234",
+      "userId": "demo-user-1",
+      "startLocation": {
+        "name": "Campus Science Block",
+        "latitude": 12.9716,
+        "longitude": 77.5946
+      },
+      "destination": {
+        "name": "Metro Station West",
+        "latitude": 12.952,
+        "longitude": 77.612
+      },
+      "expectedArrival": "2026-09-17T17:09:24.234Z",
+      "startedAt": "2026-09-17T16:39:24.234Z",
+      "endedAt": "2026-09-17T16:39:24.252Z",
+      "status": "COMPLETED",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.9716,
+        "longitude": 77.5946,
+        "accuracy": 10,
+        "timestamp": 1789663164234
+      },
+      "selectedContacts": [
+        "tc-1789663164226-619"
+      ],
+      "selectedRoute": {
+        "routeId": "safepath-commercial-lit",
+        "name": "Lit Boulevard SafePath (High Visibility)",
+        "distance": "3.2 km",
+        "estimatedDuration": "14 mins",
+        "routeType": "SAFEPATH",
+        "contextualEstimate": "Continuous street illumination & emergency escort beacons",
+        "signals": [
+          "Continuous LED lighting",
+          "Active commercial storefronts",
+          "High phone signal density"
+        ],
+        "waypoints": [
+          [
+            12.9716,
+            77.5946
+          ],
+          [
+            12.964,
+            77.601
+          ],
+          [
+            12.952,
+            77.612
+          ]
+        ]
+      },
+      "notes": "Heading home via transit corridor",
+      "createdAt": "2026-09-17T16:39:24.234Z",
+      "_id": "j-1789663164234",
+      "updatedAt": "2026-09-17T16:39:24.252Z"
+    },
+    {
+      "id": "j-1789663178974",
+      "userId": "demo-user-1",
+      "startLocation": {
+        "name": "Campus Gate",
+        "latitude": 12.97,
+        "longitude": 77.59
+      },
+      "destination": {
+        "name": "Residence",
+        "latitude": 12.93,
+        "longitude": 77.62
+      },
+      "expectedArrival": "2026-09-17T17:39:38.974Z",
+      "startedAt": "2026-09-17T16:39:38.974Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "NORMAL",
+      "currentCoordinates": {
+        "latitude": 12.97,
+        "longitude": 77.59,
+        "accuracy": 10,
+        "timestamp": 1789663178974
+      },
+      "selectedContacts": [
+        "tc-1",
+        "tc-2"
+      ],
+      "selectedRoute": null,
+      "notes": "",
+      "createdAt": "2026-09-17T16:39:38.974Z",
+      "_id": "j-1789663178974",
+      "updatedAt": "2026-09-17T16:39:39.016Z"
+    },
+    {
+      "id": "j-1789663179906",
+      "userId": "demo-user-1",
+      "startLocation": {
+        "name": "Campus Library",
+        "latitude": 12.97,
+        "longitude": 77.59
+      },
+      "destination": {
+        "name": "Apartment",
+        "latitude": 12.93,
+        "longitude": 77.62
+      },
+      "expectedArrival": "2026-09-17T17:39:39.906Z",
+      "startedAt": "2026-09-17T16:39:39.906Z",
+      "endedAt": null,
+      "status": "ACTIVE",
+      "currentState": "ELEVATED",
+      "currentCoordinates": {
+        "latitude": 12.97,
+        "longitude": 77.59,
+        "accuracy": 10,
+        "timestamp": 1789663179906
+      },
+      "selectedContacts": [
+        "tc-1",
+        "tc-2"
+      ],
+      "selectedRoute": null,
+      "notes": "",
+      "createdAt": "2026-09-17T16:39:39.906Z",
+      "_id": "j-1789663179906",
+      "updatedAt": "2026-09-17T16:39:39.945Z"
+    }
+  ],
+  "journeyEvents": [],
+  "escalations": [],
+  "checkIns": [],
+  "auditLogs": []
+}

@@ -6,8 +6,10 @@ const {
   DEFAULT_PERMISSIONS,
   createDefaultPermissions 
 } = require('../models/TrustedContact');
+const { contacts, invitations, users, journeys } = require('./db');
+const socketService = require('./socketService');
 
-// In-memory demo repository pre-seeded with initial trusted contacts and their independent permissions
+// Seed contacts for default/demo test suites
 let inMemoryContacts = [
   {
     id: 'tc-1',
@@ -130,6 +132,20 @@ const validateContactData = (data, isUpdate = false) => {
   }
 
   if (!isUpdate || data.relationship !== undefined) {
+    if (data.relationship) {
+      const relStr = String(data.relationship).toLowerCase().trim();
+      if (['mother', 'father', 'mom', 'dad', 'parent'].includes(relStr)) {
+        data.relationship = 'Parent';
+      } else if (['brother', 'sister', 'sibling'].includes(relStr)) {
+        data.relationship = 'Sibling';
+      } else if (['friend'].includes(relStr)) {
+        data.relationship = 'Friend';
+      } else if (['partner', 'spouse', 'husband', 'wife'].includes(relStr)) {
+        data.relationship = 'Partner';
+      } else if (['guardian'].includes(relStr)) {
+        data.relationship = 'Guardian';
+      }
+    }
     if (!data.relationship || !RELATIONSHIPS.includes(data.relationship)) {
       errors.push(`Relationship is required and must be one of: ${RELATIONSHIPS.join(', ')}`);
     }
@@ -183,15 +199,27 @@ const validatePermissionsObject = (permissions) => {
 };
 
 // Repository CRUD Operations
-const getAllContacts = async () => {
+const getAllContacts = async (userId = null) => {
+  if (userId) {
+    const userContacts = await contacts.find({ userId });
+    return userContacts.sort((a, b) => (a.priority || 1) - (b.priority || 1));
+  }
   return [...inMemoryContacts].sort((a, b) => a.priority - b.priority);
 };
 
-const getContactById = async (id) => {
+const getContactById = async (id, userId = null) => {
+  // Check user contacts in DB first
+  const dbContact = await contacts.findById(id);
+  if (dbContact) {
+    if (userId && dbContact.userId && dbContact.userId !== userId) {
+      return null;
+    }
+    return dbContact;
+  }
   return inMemoryContacts.find(c => c.id === id) || null;
 };
 
-const createContact = async (data) => {
+const createContact = async (data, userId = null) => {
   const validationErrors = validateContactData(data);
   if (validationErrors.length > 0) {
     const error = new Error(validationErrors.join(', '));
@@ -200,25 +228,32 @@ const createContact = async (data) => {
   }
 
   const newContact = {
-    id: `tc-${Date.now()}`,
+    id: `tc-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    userId: userId || 'demo-user-1',
     name: data.name.trim(),
     relationship: data.relationship,
     phone: data.phone.trim(),
     email: (data.email || '').trim().toLowerCase(),
-    priority: Number(data.priority),
+    priority: Number(data.priority) || 1,
     isActive: data.isActive !== undefined ? Boolean(data.isActive) : true,
     notificationPreference: data.notificationPreference || 'Push',
     permissions: data.permissions || createDefaultPermissions(),
     createdAt: new Date().toISOString()
   };
 
-  inMemoryContacts.push(newContact);
+  if (userId) {
+    await contacts.insert(newContact);
+  } else {
+    inMemoryContacts.push(newContact);
+    await contacts.insert(newContact);
+  }
+
   return newContact;
 };
 
-const updateContact = async (id, data) => {
-  const contactIndex = inMemoryContacts.findIndex(c => c.id === id);
-  if (contactIndex === -1) {
+const updateContact = async (id, data, userId = null) => {
+  const existing = await getContactById(id, userId);
+  if (!existing) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
     throw error;
@@ -231,9 +266,7 @@ const updateContact = async (id, data) => {
     throw error;
   }
 
-  const existing = inMemoryContacts[contactIndex];
-  const updated = {
-    ...existing,
+  const updates = {
     name: data.name !== undefined ? data.name.trim() : existing.name,
     relationship: data.relationship !== undefined ? data.relationship : existing.relationship,
     phone: data.phone !== undefined ? data.phone.trim() : existing.phone,
@@ -245,46 +278,57 @@ const updateContact = async (id, data) => {
     updatedAt: new Date().toISOString()
   };
 
-  inMemoryContacts[contactIndex] = updated;
-  return updated;
+  // Update in DB
+  const dbContact = await contacts.findById(id);
+  if (dbContact) {
+    await contacts.update(id, updates);
+  }
+
+  // Update in inMemory array for backward compat
+  const memIndex = inMemoryContacts.findIndex(c => c.id === id);
+  if (memIndex !== -1) {
+    inMemoryContacts[memIndex] = { ...inMemoryContacts[memIndex], ...updates };
+  }
+
+  return { ...existing, ...updates };
 };
 
-const toggleContactStatus = async (id, isActive) => {
-  const contact = inMemoryContacts.find(c => c.id === id);
+const toggleContactStatus = async (id, isActive, userId = null) => {
+  const contact = await getContactById(id, userId);
   if (!contact) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
     throw error;
   }
 
-  contact.isActive = isActive !== undefined ? Boolean(isActive) : !contact.isActive;
-  contact.updatedAt = new Date().toISOString();
+  const newStatus = isActive !== undefined ? Boolean(isActive) : !contact.isActive;
+  await updateContact(id, { isActive: newStatus }, userId);
+  contact.isActive = newStatus;
   return contact;
 };
 
-const deleteContact = async (id) => {
-  const initialLength = inMemoryContacts.length;
-  inMemoryContacts = inMemoryContacts.filter(c => c.id !== id);
-
-  if (inMemoryContacts.length === initialLength) {
+const deleteContact = async (id, userId = null) => {
+  const existing = await getContactById(id, userId);
+  if (!existing) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
     throw error;
   }
 
+  await contacts.remove(id);
+  inMemoryContacts = inMemoryContacts.filter(c => c.id !== id);
   return true;
 };
 
 // Permission Policy Operations
-const getContactPermissions = async (id) => {
-  const contact = inMemoryContacts.find(c => c.id === id);
+const getContactPermissions = async (id, userId = null) => {
+  const contact = await getContactById(id, userId);
   if (!contact) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
     throw error;
   }
 
-  // Ensure contact has complete permissions structure
   if (!contact.permissions) {
     contact.permissions = createDefaultPermissions();
   }
@@ -298,8 +342,8 @@ const getContactPermissions = async (id) => {
   };
 };
 
-const updateContactPermissions = async (id, newPermissions) => {
-  const contact = inMemoryContacts.find(c => c.id === id);
+const updateContactPermissions = async (id, newPermissions, userId = null) => {
+  const contact = await getContactById(id, userId);
   if (!contact) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
@@ -313,37 +357,179 @@ const updateContactPermissions = async (id, newPermissions) => {
     throw error;
   }
 
-  // Deep clone to ensure full independence
-  contact.permissions = JSON.parse(JSON.stringify(newPermissions));
-  contact.updatedAt = new Date().toISOString();
+  const permissionsClone = JSON.parse(JSON.stringify(newPermissions));
+  await updateContact(id, { permissions: permissionsClone }, userId);
 
   return {
     contactId: contact.id,
     contactName: contact.name,
     relationship: contact.relationship,
     isActive: contact.isActive !== false,
-    permissions: contact.permissions
+    permissions: permissionsClone
   };
 };
 
-const restoreDefaultPermissions = async (id) => {
-  const contact = inMemoryContacts.find(c => c.id === id);
+const restoreDefaultPermissions = async (id, userId = null) => {
+  const contact = await getContactById(id, userId);
   if (!contact) {
     const error = new Error('Contact not found');
     error.statusCode = 404;
     throw error;
   }
 
-  contact.permissions = createDefaultPermissions();
-  contact.updatedAt = new Date().toISOString();
+  const defaults = createDefaultPermissions();
+  await updateContact(id, { permissions: defaults }, userId);
 
   return {
     contactId: contact.id,
     contactName: contact.name,
     relationship: contact.relationship,
     isActive: contact.isActive !== false,
-    permissions: contact.permissions
+    permissions: defaults
   };
+};
+
+// ==========================================
+// Multi-Account Invitation & Ward Subsystem
+// ==========================================
+
+/**
+ * Person invites a trusted contact (e.g. Mom or Dad) by email
+ */
+const inviteContact = async (invitationData, fromUser) => {
+  const { name, email, relationship, phone, priority, permissions } = invitationData;
+  if (!email || !email.includes('@')) {
+    const err = new Error('A valid contact email is required');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const normalizedEmail = email.toLowerCase().trim();
+
+  // Create or update contact record for fromUser
+  const existingContact = await contacts.findOne(c => c.userId === fromUser.id && c.email === normalizedEmail);
+  let contactRecord;
+
+  if (existingContact) {
+    contactRecord = await updateContact(existingContact.id, {
+      name: name || existingContact.name,
+      relationship: relationship || existingContact.relationship,
+      phone: phone || existingContact.phone,
+      priority: priority || existingContact.priority,
+      permissions: permissions || existingContact.permissions,
+      isActive: true
+    }, fromUser.id);
+  } else {
+    contactRecord = await createContact({
+      name: name || normalizedEmail.split('@')[0],
+      relationship: relationship || 'Family',
+      phone: phone || '+1 000-000-0000',
+      email: normalizedEmail,
+      priority: priority || 1,
+      isActive: true,
+      permissions: permissions || createDefaultPermissions()
+    }, fromUser.id);
+  }
+
+  // Create Invitation record
+  const invitation = await invitations.insert({
+    fromUserId: fromUser.id,
+    fromUserName: fromUser.name,
+    fromUserEmail: fromUser.email,
+    toEmail: normalizedEmail,
+    toName: name || '',
+    relationship: relationship || 'Family',
+    contactId: contactRecord.id,
+    status: 'PENDING',
+    permissions: contactRecord.permissions,
+    createdAt: new Date().toISOString()
+  });
+
+  // Check if invited user already has an account
+  const targetUser = await users.findOne({ email: normalizedEmail });
+  if (targetUser) {
+    // Notify via WebSocket if active
+    socketService.sendToUser(targetUser.id, 'INVITATION_RECEIVED', {
+      invitationId: invitation.id,
+      fromUserName: fromUser.name,
+      fromUserEmail: fromUser.email,
+      relationship: relationship || 'Family'
+    });
+  }
+
+  return { contact: contactRecord, invitation };
+};
+
+/**
+ * Retrieves all pending invitations for a user by email
+ */
+const getPendingInvitations = async (userEmail) => {
+  const normalized = (userEmail || '').toLowerCase().trim();
+  return await invitations.find(inv => inv.toEmail === normalized && inv.status === 'PENDING');
+};
+
+/**
+ * Accept or decline an invitation
+ */
+const respondToInvitation = async (invitationId, status, user) => {
+  const inv = await invitations.findById(invitationId);
+  if (!inv) {
+    const err = new Error('Invitation not found');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  if (inv.toEmail !== user.email.toLowerCase().trim()) {
+    const err = new Error('Unauthorized to respond to this invitation');
+    err.statusCode = 403;
+    throw err;
+  }
+
+  const updatedInv = await invitations.update(invitationId, {
+    status: status === 'ACCEPTED' ? 'ACCEPTED' : 'REJECTED',
+    toUserId: user.id
+  });
+
+  // Notify the inviter (Person)
+  socketService.sendToUser(inv.fromUserId, 'INVITATION_RESPONDED', {
+    invitationId,
+    responderName: user.name,
+    responderEmail: user.email,
+    status: updatedInv.status
+  });
+
+  return updatedInv;
+};
+
+/**
+ * Retrieves all "Wards" (people who have invited the current user, and invitation was accepted)
+ */
+const getWardsForUser = async (userEmail) => {
+  const normalized = (userEmail || '').toLowerCase().trim();
+  const acceptedInvs = await invitations.find(inv => inv.toEmail === normalized && inv.status === 'ACCEPTED');
+
+  const wards = [];
+  for (const inv of acceptedInvs) {
+    const wardUser = await users.findById(inv.fromUserId);
+    if (wardUser) {
+      // Find active journey of the ward
+      const activeJourney = await journeys.findOne(j => j.userId === wardUser.id && j.status === 'ACTIVE');
+      const contact = await contacts.findById(inv.contactId);
+
+      wards.push({
+        invitationId: inv.id,
+        wardId: wardUser.id,
+        wardName: wardUser.name,
+        wardEmail: wardUser.email,
+        relationship: inv.relationship,
+        contactId: inv.contactId,
+        permissions: contact ? contact.permissions : inv.permissions,
+        activeJourney: activeJourney || null
+      });
+    }
+  }
+
+  return wards;
 };
 
 module.exports = {
@@ -357,5 +543,9 @@ module.exports = {
   updateContactPermissions,
   restoreDefaultPermissions,
   validateContactData,
-  validatePermissionsObject
+  validatePermissionsObject,
+  inviteContact,
+  getPendingInvitations,
+  respondToInvitation,
+  getWardsForUser
 };

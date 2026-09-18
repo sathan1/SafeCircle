@@ -1,17 +1,18 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
-const API_URL = `${API_BASE_URL}/api/privacy`;
+import { getApiBaseUrl } from './apiConfig';
+
+const getApiUrl = () => `${getApiBaseUrl()}/api/privacy`;
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
   };
 };
 
 const privacyService = {
   async getPolicies() {
-    const response = await fetch(API_URL, {
+    const response = await fetch(getApiUrl(), {
       method: 'GET',
       headers: getHeaders()
     });
@@ -20,7 +21,7 @@ const privacyService = {
   },
 
   async getPolicyForContact(contactId) {
-    const response = await fetch(`${API_URL}/${contactId}`, {
+    const response = await fetch(`${getApiUrl()}/${contactId}`, {
       method: 'GET',
       headers: getHeaders()
     });
@@ -29,7 +30,7 @@ const privacyService = {
   },
 
   async updatePolicy(contactId, permissions) {
-    const response = await fetch(`${API_URL}/${contactId}`, {
+    const response = await fetch(`${getApiUrl()}/${contactId}`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify({ permissions })
@@ -40,7 +41,7 @@ const privacyService = {
   },
 
   async evaluatePolicy(contactId, safetyState) {
-    const response = await fetch(`${API_URL}/evaluate`, {
+    const response = await fetch(`${getApiUrl()}/evaluate`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ contactId, safetyState })

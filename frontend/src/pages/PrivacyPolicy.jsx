@@ -192,7 +192,7 @@ const PrivacyPolicy = () => {
             Privacy Policy
           </h1>
           <p className="text-xs sm:text-sm text-stone-600 mt-0.5">
-            You decide what each trusted contact can access at every safety stage.
+            Configure what each person can see at every safety stage.
           </p>
         </div>
 
@@ -208,6 +208,22 @@ const PrivacyPolicy = () => {
           </Button>
         </div>
       </div>
+
+      {/* Core Privacy Guarantee Banner */}
+      <div className="bg-rose-50/80 border border-rose-200/80 rounded-2xl p-4 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0">
+          <Lock className="w-5 h-5" />
+        </div>
+        <div>
+          <h4 className="text-sm font-bold text-stone-900">
+            You control what each person can see.
+          </h4>
+          <p className="text-xs text-stone-600 mt-0.5">
+            Trusted contacts never receive your live GPS automatically. Information is progressively unlocked only when your safety state requires it.
+          </p>
+        </div>
+      </div>
+
 
       {/* Main Loading / Error / Empty States */}
       {isLoadingContacts ? (

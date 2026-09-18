@@ -164,15 +164,16 @@ const ContactModal = ({ isOpen, onClose, onSubmit, contactToEdit, isSubmitting }
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-stone-700 mb-1">
-                Email Address <span className="text-stone-400 font-normal">(Optional)</span>
+                Email Address <span className="text-rose-600 font-semibold">(For Account Sync)</span>
               </label>
               <input
                 type="email"
-                placeholder="contact@example.com"
+                placeholder="e.g. mom@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full text-xs p-2.5 rounded-xl border border-stone-200 bg-white focus:outline-none focus:ring-2 focus:ring-rose-400"
               />
+              <span className="text-[10px] text-stone-400 block mt-0.5">Sends instant invitation to their SafeCircle app.</span>
             </div>
 
             <div>

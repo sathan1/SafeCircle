@@ -47,7 +47,7 @@ const PermissionPreview = ({ contact, permissions }) => {
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-3 h-3" />
-            <span>Demonstration Widget</span>
+            <span>Live Privacy Preview</span>
           </div>
           <h3 className="text-base font-bold text-stone-900">
             Permission Preview

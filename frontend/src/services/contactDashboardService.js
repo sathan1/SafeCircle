@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://safecircle-backend-38w8.onrender.com';
+import { getApiBaseUrl } from './apiConfig';
 
 /**
  * Service to interact with Phase 9 Contact Dashboard backend endpoints
@@ -13,7 +13,7 @@ export const contactDashboardService = {
    * @returns {Promise<Object>} Evaluated contact view payload
    */
   async getContactView(journeyId, contactId) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/contact-view/${contactId}`);
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/contact-view/${contactId}`);
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || 'Failed to fetch contact view');
@@ -29,7 +29,7 @@ export const contactDashboardService = {
    * @returns {Promise<Object>} Updated journey record
    */
   async updateSafetyState(journeyId, state) {
-    const response = await fetch(`${API_BASE_URL}/api/journeys/${journeyId}/state`, {
+    const response = await fetch(`${getApiBaseUrl()}/api/journeys/${journeyId}/state`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ state })
