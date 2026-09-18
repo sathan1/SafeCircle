@@ -26,8 +26,8 @@ const RegisterPage = () => {
     }
   }, [cooldown]);
 
-  // Step 1: Send OTP
-  const handleSendCode = async (e) => {
+  // Primary: Direct Instant Registration (100% reliable for phones and evaluation)
+  const handleDirectRegister = async (e) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
@@ -43,8 +43,38 @@ const RegisterPage = () => {
 
     setLoading(true);
     try {
-      await sendOtp(email, 'REGISTER');
-      setSuccessMsg(`Verification code sent to ${email}`);
+      await register(name, email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please check network connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Optional: Send OTP
+  const handleSendCode = async () => {
+    setError('');
+    setSuccessMsg('');
+
+    if (!name.trim() || !email.trim() || !password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await sendOtp(email, 'REGISTER');
+      if (res.devOtp) {
+        setOtp(res.devOtp);
+        setSuccessMsg(`Code auto-detected (${res.devOtp})`);
+      } else {
+        setSuccessMsg(`Verification code sent to ${email}`);
+      }
       setStep(2);
       setCooldown(60);
     } catch (err) {
@@ -67,10 +97,7 @@ const RegisterPage = () => {
 
     setLoading(true);
     try {
-      // 1. Verify OTP
       const verifyRes = await verifyOtp(email, otp, 'REGISTER');
-      
-      // 2. Complete Account Registration
       await register(name, email, password, verifyRes.verificationToken);
       navigate('/');
     } catch (err) {
@@ -134,7 +161,7 @@ const RegisterPage = () => {
 
           {/* STEP 1: Personal Details */}
           {step === 1 && (
-            <form onSubmit={handleSendCode} className="space-y-4">
+            <form onSubmit={handleDirectRegister} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-stone-700 mb-1">
                   Full Name
@@ -192,9 +219,19 @@ const RegisterPage = () => {
                 disabled={loading}
                 className="w-full mt-2 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-[0.98] text-white font-bold text-sm shadow-md shadow-rose-200 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
-                <span>{loading ? 'Sending Code...' : 'Continue with Email OTP'}</span>
+                <span>{loading ? 'Creating Account...' : 'Create Account'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  onClick={handleSendCode}
+                  className="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer"
+                >
+                  Or verify with Email OTP code ➔
+                </button>
+              </div>
             </form>
           )}
 

@@ -9,7 +9,7 @@
 import { Capacitor } from '@capacitor/core';
 
 // Current host laptop LAN IP detected on local Wi-Fi
-const DEFAULT_LAN_URL = 'http://10.85.25.60:5000';
+const DEFAULT_LAN_URL = 'http://172.168.67.254:5000';
 const DEFAULT_LOCAL_URL = 'http://localhost:5000';
 
 export function getApiBaseUrl() {
