@@ -8,15 +8,24 @@
 
 import { Capacitor } from '@capacitor/core';
 
-// Current host laptop LAN IP detected on local Wi-Fi
-const DEFAULT_LAN_URL = 'http://172.168.67.254:5000';
-const DEFAULT_LOCAL_URL = 'http://localhost:5000';
+// Current host configurations
+export const DEFAULT_LAN_URL = 'http://172.168.67.254:5000';
+export const DEFAULT_LOCAL_URL = 'http://localhost:5000';
+export const DEFAULT_TUNNEL_URL = 'https://safecircle-live.loca.lt';
 
 export function getApiBaseUrl() {
+  // If running in browser on localhost, ALWAYS use local port 5000 loopback
+  if (typeof window !== 'undefined' && window.location && window.location.hostname) {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return DEFAULT_LOCAL_URL;
+    }
+  }
+
   const custom = localStorage.getItem('safecircle_api_url');
   if (custom && custom.trim()) {
     const trimmed = custom.trim().replace(/\/+$/, '');
-    // Auto-clean dead Render or stale IPs
+    // Clean dead or outdated addresses
     if (trimmed.includes('onrender.com') || trimmed.includes('192.168.31.181') || trimmed.includes('10.85.25.60')) {
       localStorage.removeItem('safecircle_api_url');
     } else {
@@ -29,21 +38,18 @@ export function getApiBaseUrl() {
     return envUrl.trim().replace(/\/+$/, '');
   }
 
-  // If accessed in browser on localhost, always talk directly to local backend port 5000
+  // If accessed via LAN IP in browser (e.g. http://172.168.67.254:5173)
   if (typeof window !== 'undefined' && window.location && window.location.hostname) {
     const host = window.location.hostname;
-    if (host === 'localhost' || host === '127.0.0.1') {
-      return DEFAULT_LOCAL_URL;
-    }
-    // Accessed via LAN IP in browser (e.g. http://172.168.67.254:5173)
-    if (!host.startsWith('10.0.2.')) {
+    if (!host.startsWith('10.0.2.') && host !== 'localhost' && host !== '127.0.0.1') {
       return `http://${host}:5000`;
     }
   }
 
-  // If running as native Android APK on a physical phone, default to host laptop LAN IP
+  // If running as native Android APK on a physical phone:
+  // Default to live public HTTPS cloud tunnel (works on cellular 4G/5G and Wi-Fi without firewall issues)
   if (Capacitor.isNativePlatform()) {
-    return DEFAULT_LAN_URL;
+    return DEFAULT_TUNNEL_URL;
   }
 
   return DEFAULT_LOCAL_URL;

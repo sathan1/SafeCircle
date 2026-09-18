@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Shield, Mail, Lock, ArrowRight, AlertCircle, CheckCircle, KeyRound, Wifi, Settings, RefreshCw, CheckCircle2 } from 'lucide-react';
-import { getApiBaseUrl, setApiBaseUrl, resetApiBaseUrl } from '../services/apiConfig';
+import { getApiBaseUrl, setApiBaseUrl, resetApiBaseUrl, DEFAULT_TUNNEL_URL, DEFAULT_LAN_URL, DEFAULT_LOCAL_URL } from '../services/apiConfig';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -39,7 +39,12 @@ const LoginPage = () => {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Failed to sign in. Please verify your credentials.');
+      const msg = err.message || '';
+      if (msg.toLowerCase().includes('fetch') || msg.toLowerCase().includes('network')) {
+        setError(`Cannot connect to backend (${getApiBaseUrl()}). Tap "Change" below to switch to Cloud Tunnel or Wi-Fi.`);
+      } else {
+        setError(msg || 'Failed to sign in. Please verify your credentials.');
+      }
     } finally {
       setLoading(false);
     }
@@ -352,18 +357,36 @@ const LoginPage = () => {
 
             <div>
               <label className="block text-xs font-semibold text-stone-700 mb-1">
-                Server URL (HTTP / WS)
+                Server URL (HTTP / HTTPS / WS)
               </label>
               <input
                 type="url"
                 value={inputApiUrl}
                 onChange={(e) => setInputApiUrl(e.target.value)}
-                placeholder="http://192.168.31.181:5000"
+                placeholder={DEFAULT_TUNNEL_URL}
                 className="w-full px-3 py-2 rounded-xl border border-stone-300 font-mono text-xs text-stone-900"
               />
-              <span className="text-[10px] text-stone-400 mt-1 block">
-                Laptop Wi-Fi: <code className="text-stone-700">http://192.168.31.181:5000</code>
-              </span>
+              <div className="mt-2 space-y-1">
+                <div className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">Select Preset:</div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => { setInputApiUrl(DEFAULT_TUNNEL_URL); setTestStatus(null); }}
+                    className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-900 text-[10px] font-bold text-left transition cursor-pointer"
+                  >
+                    ☁️ Cloud Tunnel (HTTPS)
+                    <span className="block text-[9px] font-normal text-rose-700 truncate">Cellular & Wi-Fi safe</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setInputApiUrl(DEFAULT_LAN_URL); setTestStatus(null); }}
+                    className="p-2 rounded-xl bg-stone-50 hover:bg-stone-100 border border-stone-200 text-stone-800 text-[10px] font-bold text-left transition cursor-pointer"
+                  >
+                    📶 Wi-Fi LAN
+                    <span className="block text-[9px] font-normal text-stone-500 truncate">172.168.67.254:5000</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {testStatus && (

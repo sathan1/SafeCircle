@@ -3,6 +3,24 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
+// Global fetch enhancer: injects Bypass-Tunnel-Reminder for seamless localtunnel routing
+const originalFetch = window.fetch;
+window.fetch = async function (resource, init = {}) {
+  init = init || {};
+  const headers = init.headers || {};
+  if (headers instanceof Headers) {
+    if (!headers.has('Bypass-Tunnel-Reminder')) {
+      headers.set('Bypass-Tunnel-Reminder', 'true');
+    }
+  } else if (Array.isArray(headers)) {
+    headers.push(['Bypass-Tunnel-Reminder', 'true']);
+  } else {
+    headers['Bypass-Tunnel-Reminder'] = 'true';
+    init.headers = headers;
+  }
+  return originalFetch.call(this, resource, init);
+};
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);

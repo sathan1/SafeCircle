@@ -58,7 +58,7 @@ def patch_apk():
             '\t"webDir": "dist",\n'
             '\t"bundledWebRuntime": false,\n'
             '\t"server": {\n'
-            '\t\t"androidScheme": "https",\n'
+            '\t\t"androidScheme": "http",\n'
             '\t\t"cleartext": true\n'
             '\t}\n'
             '}'
